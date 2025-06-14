@@ -41,5 +41,3 @@ async def ask(ctx, *, question=None):
             await ctx.send(f"⚠️ Error: {str(e)}")
 
 bot.run(os.getenv("DISCORD_TOKEN"))
-
-  
