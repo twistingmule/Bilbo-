@@ -27,17 +27,19 @@ async def ask(ctx, *, question=None):
         await ctx.send("❗ You need to ask a question, like:\n`!ask What is the meaning of life?`")
         return
 
-    await ctx.trigger_typing()
-    try:
-        response = openai.ChatCompletion.create(
-            model="deepseek/deepseek-r1-0528-qwen3-8b:free",  # or "openrouter/gpt-3.5-turbo" if available
-            messages=[
-                {"role": "user", "content": question}
-            ]
-        )
-        answer = response.choices[0].message.content.strip()
-        await ctx.send(answer[:2000])  # Discord message limit
-    except Exception as e:
-        await ctx.send(f"⚠️ Error: {str(e)}")
+    async with ctx.channel.typing():  # ✅ Correct typing usage
+        try:
+            response = openai.ChatCompletion.create(
+                model="deepseek/deepseek-r1-0528-qwen3-8b:free",  # Or another OpenRouter model
+                messages=[
+                    {"role": "user", "content": question}
+                ]
+            )
+            answer = response.choices[0].message.content.strip()
+            await ctx.send(answer[:2000])  # Truncate long responses for Discord
+        except Exception as e:
+            await ctx.send(f"⚠️ Error: {str(e)}")
 
 bot.run(os.getenv("DISCORD_TOKEN"))
+
+  
