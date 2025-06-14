@@ -5,14 +5,15 @@ from discord.ext import commands
 from openai import OpenAI
 from flask import Flask
 
-# --- OpenRouter Setup ---
-openai.api_key = os.getenv("OPENROUTER_API_KEY")
-openai.api_base = "https://openrouter.ai/api/v1"
+# --- OpenRouter Client Setup (using SDK ≥ 1.0.0) ---
+client = OpenAI(
+    api_key=os.getenv("OPENROUTER_API_KEY"),
+    base_url="https://openrouter.ai/api/v1"
+)
 
-# --- Discord Setup ---
+# --- Discord Bot Setup ---
 intents = discord.Intents.default()
 intents.message_content = True
-
 bot = commands.Bot(command_prefix="!", intents=intents)
 
 @bot.event
@@ -31,7 +32,7 @@ async def ask(ctx, *, question=None):
 
     async with ctx.channel.typing():
         try:
-            response = openai.ChatCompletion.create(
+            response = client.chat.completions.create(
                 model="deepseek/deepseek-r1-0528-qwen3-8b:free",
                 messages=[{"role": "user", "content": question}]
             )
@@ -40,7 +41,7 @@ async def ask(ctx, *, question=None):
         except Exception as e:
             await ctx.send(f"⚠️ Error: {str(e)}")
 
-# --- Flask Setup ---
+# --- Flask Setup for Render Health Check ---
 app = Flask(__name__)
 
 @app.route("/")
@@ -50,8 +51,7 @@ def home():
 def run_bot():
     bot.run(os.getenv("DISCORD_TOKEN"))
 
-# --- Start everything ---
 if __name__ == "__main__":
     threading.Thread(target=run_bot).start()
-    port = int(os.environ.get("PORT", 5000))  # Render uses PORT env var
+    port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
