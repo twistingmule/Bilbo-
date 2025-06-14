@@ -1,13 +1,15 @@
+import os
+import threading
 import discord
 from discord.ext import commands
-import os
 import openai
+from flask import Flask
 
-# Setup OpenRouter credentials
+# --- OpenRouter Setup ---
 openai.api_key = os.getenv("OPENROUTER_API_KEY")
 openai.api_base = "https://openrouter.ai/api/v1"
 
-# Discord bot setup with required intents
+# --- Discord Setup ---
 intents = discord.Intents.default()
 intents.message_content = True
 
@@ -15,7 +17,7 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 
 @bot.event
 async def on_ready():
-    print(f"Bot is online as {bot.user}")
+    print(f"🤖 Bot is online as {bot.user}")
 
 @bot.command()
 async def ping(ctx):
@@ -27,17 +29,29 @@ async def ask(ctx, *, question=None):
         await ctx.send("❗ You need to ask a question, like:\n`!ask What is the meaning of life?`")
         return
 
-    async with ctx.channel.typing():  # ✅ Correct typing usage
+    async with ctx.channel.typing():
         try:
             response = openai.ChatCompletion.create(
-                model="deepseek/deepseek-r1-0528-qwen3-8b:free",  # Or another OpenRouter model
-                messages=[
-                    {"role": "user", "content": question}
-                ]
+                model="deepseek/deepseek-r1-0528-qwen3-8b:free",
+                messages=[{"role": "user", "content": question}]
             )
             answer = response.choices[0].message.content.strip()
-            await ctx.send(answer[:2000])  # Truncate long responses for Discord
+            await ctx.send(answer[:2000])
         except Exception as e:
             await ctx.send(f"⚠️ Error: {str(e)}")
 
-bot.run(os.getenv("DISCORD_TOKEN"))
+# --- Flask Setup ---
+app = Flask(__name__)
+
+@app.route("/")
+def home():
+    return "Discord Bot is running!"
+
+def run_bot():
+    bot.run(os.getenv("DISCORD_TOKEN"))
+
+# --- Start everything ---
+if __name__ == "__main__":
+    threading.Thread(target=run_bot).start()
+    port = int(os.environ.get("PORT", 5000))  # Render uses PORT env var
+    app.run(host="0.0.0.0", port=port)
