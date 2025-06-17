@@ -14,7 +14,7 @@ client = OpenAI(
 # --- Discord Bot Setup ---
 intents = discord.Intents.default()
 intents.message_content = True
-bot = commands.Bilbo(command_prefix="!", intents=intents)
+bot = commands.bot(command_prefix="!", intents=intents)
 
 @bot.event
 async def on_ready():
