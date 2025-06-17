@@ -2,8 +2,8 @@ import os
 import threading
 import discord
 from discord.ext import commands
-from openai import OpenAI
-from flask import Flask
+from OpenAI import OpenAI
+from Flask import Flask
 
 # --- OpenRouter Client Setup (using SDK ≥ 1.0.0) ---
 client = OpenAI(
