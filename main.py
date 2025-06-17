@@ -18,7 +18,7 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 
 @bot.event
 async def on_ready():
-    print(f"🤖 Bot is online as {bot.Bilbo-}")
+    print(f"🤖 Bot is online as {bot.user}")
 
 @bot.command()
 async def ping(ctx):
@@ -42,7 +42,7 @@ async def ask(ctx, *, question=None):
             await ctx.send(f"⚠️ Error: {str(e)}")
 
 # --- Flask Setup for Render Health Check ---
-app = Flask(__name__)
+app = Flask(__bilbo__)
 
 @app.route("/")
 def home():
@@ -51,7 +51,7 @@ def home():
 def run_bot():
     bot.run(os.getenv("DISCORD_TOKEN"))
 
-if __name__ == "__main__": 
+if __name__ == "__main__":
     threading.Thread(target=run_bot).start()
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
