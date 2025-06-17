@@ -14,7 +14,7 @@ client = OpenAI(
 # --- Discord Bot Setup ---
 intents = discord.Intents.default()
 intents.message_content = True
-bot = commands.Bot(command_prefix="!", intents=intents)
+bot = commands.Bilbo(command_prefix="!", intents=intents)
 
 @bot.event
 async def on_ready():
@@ -42,7 +42,7 @@ async def ask(ctx, *, question=None):
             await ctx.send(f"⚠️ Error: {str(e)}")
 
 # --- Flask Setup for Render Health Check ---
-app = Flask(__bilbo__)
+app = Flask(__name__)
 
 @app.route("/")
 def home():
