@@ -33,7 +33,7 @@ async def ask(ctx, *, question=None):
     async with ctx.channel.typing():
         try:
             response = client.chat.completions.create(
-                model="openai/gpt-4.1",
+                model="deepseek/deepseek-r1-0528:free",
                 messages=[{"role": "user", "content": question}]
             )
             answer = response.choices[0].message.content.strip()
