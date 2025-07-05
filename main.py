@@ -8,7 +8,7 @@ from flask import Flask
 # --- OpenRouter Client Setup (using SDK ≥ 1.0.0) ---
 client = OpenAI(
     api_key=os.getenv("OPENROUTER_API_KEY"),
-    base_url="https://openrouter.ai/api/v1"
+    base_url="https://meta-llama/llama-4-scout-17b-16e-instruct:free"
 )
 
 # --- Discord Bot Setup ---
@@ -33,7 +33,7 @@ async def ask(ctx, *, question=None):
     async with ctx.channel.typing():
         try:
             response = client.chat.completions.create(
-                model="meta-llama/llama-4 scout:free",
+                model="meta-llama/llama-4-scout:free",
                 messages=[{"role": "user", "content": question}]
             )
             answer = response.choices[0].message.content.strip()
