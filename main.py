@@ -6,7 +6,7 @@ from openai import OpenAI
 from flask import Flask
 
 # --- OpenRouter Client Setup (using SDK ≥ 1.0.0) ---
-client = OpenAI(
+client = OpenAI()
     api_key=os.getenv("OPENROUTER_API_KEY"),
     base_url="https://openrouter.ai/api/v1"
 
