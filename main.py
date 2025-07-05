@@ -8,8 +8,7 @@ from flask import Flask
 # --- OpenRouter Client Setup (using SDK ≥ 1.0.0) ---
 client = OpenAI(
     api_key=os.getenv("OPENROUTER_API_KEY"),
-    base_url="https://meta-llama/llama-4-scout-17b-16e-instruct:free"
-)
+    base_url="https://openrouter.ai/api/v1"
 
 # --- Discord Bot Setup ---
 intents = discord.Intents.default()
