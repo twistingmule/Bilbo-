@@ -1,10 +1,9 @@
-import os
+Blibo updated code   import os
 import threading
 import discord
 from discord.ext import commands
 from openai import OpenAI
 from flask import Flask
-import traceback
 
 # --- OpenRouter Client Setup (using SDK ≥ 1.0.0) ---
 client = OpenAI(
@@ -34,13 +33,12 @@ async def ask(ctx, *, question=None):
     async with ctx.channel.typing():
         try:
             response = client.chat.completions.create(
-                model="meta-llama/llama-4-scout-17b-16e-instruct:free",
+                model="meta-llama/llama-4-scout:free",
                 messages=[{"role": "user", "content": question}]
             )
             answer = response.choices[0].message.content.strip()
             await ctx.send(answer[:2000])
         except Exception as e:
-            traceback.print_exc()
             await ctx.send(f"⚠️ Error: {str(e)}")
 
 # --- Flask Setup for Render Health Check ---
