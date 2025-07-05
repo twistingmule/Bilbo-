@@ -33,7 +33,7 @@ async def ask(ctx, *, question=None):
     async with ctx.channel.typing():
         try:
             response = client.chat.completions.create(
-                model="meta-llama/llama-4-scout:free",
+                model="meta-llama/llama-4-scout-17b-16e-instruct:free",
                 messages=[{"role": "user", "content": question}]
             )
             answer = response.choices[0].message.content.strip()
