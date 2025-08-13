@@ -1,15 +1,15 @@
-import os
+mport os
 import threading
 import discord
 from discord.ext import commands
-import openai
+from openai import OpenAI
 from flask import Flask
 
-# --- OpenRouter Client Setup ---
-openai.api_key = os.getenv("OPENROUTER_API_KEY")
-openai.base_url = "https://openrouter.ai/api/v1"
+client = OpenAI(
+    api_key=os.getenv("OPENROUTER_API_KEY"),
+    base_url="https://openrouter.ai/api/v1"
+)
 
-# --- Discord Bot Setup ---
 intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix="!", intents=intents)
@@ -30,8 +30,8 @@ async def ask(ctx, *, question=None):
 
     async with ctx.channel.typing():
         try:
-            response = openai.chat.completions.create(
-                model="meta-llama/llama-4-scout:free",
+            response = client.chat.completions.create(
+                model="deepseek/deepseek-r1-0528-qwen3-8b:free",
                 messages=[{"role": "user", "content": question}]
             )
             answer = response.choices[0].message.content.strip()
@@ -39,7 +39,17 @@ async def ask(ctx, *, question=None):
         except Exception as e:
             await ctx.send(f"⚠️ Error: {str(e)}")
 
-# --- Flask Setup for Render Health Check ---
+@bot.command(name="help")
+async def custom_help(ctx):
+    help_text = (
+        "**Here are my available commands:**\n"
+        "\n"
+        "• `!ping` - Check if the bot is responsive\n"
+        "• `!ask <question>` - Ask me anything using AI\n"
+        "• `!help` - Show this help message"
+    )
+    await ctx.send(help_text)
+
 app = Flask(__name__)
 
 @app.route("/")
