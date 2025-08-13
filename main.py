@@ -39,7 +39,6 @@ async def ask(ctx, *, question=None):
         except Exception as e:
             await ctx.send(f"⚠️ Error: {str(e)}")
 
-@bot.command(name="help")
 async def custom_help(ctx):
     help_text = (
         "**Here are my available commands:**\n"
