@@ -34,7 +34,7 @@ async def ask(ctx, *, question=None):
                 model="deepseek/deepseek-r1-0528-qwen3-8b:free",
                 messages=[{"role": "user", "content": question}]
             )
-            answer = response.choices[0].message.["content"].strip()
+            answer = response.choices[0].message.content.strip()
             await ctx.send(answer[:2000])
         except Exception as e:
             await ctx.send(f"⚠️ Error: {str(e)}")
